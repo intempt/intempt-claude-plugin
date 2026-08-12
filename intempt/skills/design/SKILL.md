@@ -12,11 +12,13 @@ knowing doesn't exist yet:
 
 1. **Content generation (7 tools)** — `generate_email`, `generate_sms`,
    `generate_push_notification`, `generate_landing_page`, `generate_slack_message`,
-   `generate_text`, `generate_image`. These route through a WebSocket (`/chat`
-   protocol, first-message auth frame then a message frame, resolving on
-   `messageEnd`) — a different transport than everything else in this skill, but
-   present the same way to you: give it a prompt, get a real generated deliverable
-   back, not a stub.
+   `generate_text`, `generate_image`. ⚠️ **These are NOT registry entries.** They are
+   hand-written MCP tools in `apps/mcp/src/tools.ts`; a registry lookup for
+   `generate_*` returns nothing, and `intempt registry list` will not show them. They
+   route through a WebSocket (`/chat` protocol, first-message auth frame then a message
+   frame, resolving on `messageEnd`) — a different transport than everything else in
+   this skill, but present the same way to you: give it a prompt, get a real generated
+   deliverable back, not a stub. **MCP only** — there is no CLI equivalent.
 2. **Designer (20 entries)** — brand designs, Creative Studio outputs, Design System
    tokens, Avatars, Poses, Scenes. Real REST registry calls. Creation in all of these
    is AI-chat-mediated only — there's no blank-form UI anywhere in this area, so don't

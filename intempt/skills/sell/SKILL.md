@@ -32,6 +32,23 @@ Meeting *type*/booking configuration is a separate concern (see Scheduling below
 domain is the recording/transcript/summary layer only, after a meeting has already
 happened or is happening.
 
+**Meeting types — 5 entries, 4 of them MCP-reachable:**
+
+| Entry | Write-safety | Reachable from |
+|---|---|---|
+| `list_meeting_types` | `read` | CLI + MCP |
+| `get_meeting_type` | `read` | CLI + MCP |
+| `update_meeting_type` | `single-edit` | CLI + MCP |
+| `delete_meeting_type` | `single-edit` | CLI + MCP |
+| `create_meeting_type` | `create-or-bulk-or-destructive` | **CLI only** |
+
+⚠️ **Creating a meeting type is not an MCP tool** — it is excluded by write-safety, like
+every other `create-or-bulk-or-destructive` entry. If asked to create one from an MCP
+session, tell the user to use the CLI or the console. **Do not** instruct them to call a
+`create_meeting_type` tool: it does not exist on that surface. The other four behave
+normally, including `delete_meeting_type` — it is `single-edit`, so it IS reachable, and
+it does delete. Confirm before calling it.
+
 ## Scheduling — real, shipped product, no tool yet
 
 Booking links (Individual/Round Robin/Collective meeting types, public booking pages)

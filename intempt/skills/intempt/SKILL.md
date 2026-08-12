@@ -41,6 +41,19 @@ with a resolved org/project.
 | `instrument` | native CLI layer, not registry-backed | n/a |
 | `registry` | meta — covers anything above by domain+action name directly | all 204 |
 
+**This table is exhaustive for the domains a task should route to, but it does not cover
+every domain in the registry.** Three are deliberately unrouted:
+
+| Domain | Entries | Why no skill routes it |
+|---|---|---|
+| `recipes` | 2 | read-only (`list_recipes`, `get_recipe`); reach via `registry` |
+| `workflows` | 1 | its single entry `list_active_workflows` is a **non-functional stub** |
+| *(no domain)* | 1 | `search_project` — also a **non-functional stub** |
+
+So: 43 + 21 + 20 + 33 + 43 + 17 + 9 + 14 + 12 + 13 + 8 + 10 = the routed domains, and the
+remaining 4 entries are the two stubs plus the two recipe reads. **If a user asks for
+project-wide search or active workflows, tell them it isn't available** — don't route it.
+
 **blu-chat's 33 entries split across two skills, not one** — Brand Kit/personas/knowledge
 base go to `design` (matches Design's own "brand kit + customer data" claim), outreach
 actions (`draft_outreach`, `reply_to_email`, `preflight_email`) go to `sell` (matches

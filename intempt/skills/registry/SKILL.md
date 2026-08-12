@@ -13,6 +13,22 @@ directly — the domain skills (`crm`, `analyze`, `design`, `market`, `sell`) ar
 paths through the parts of this same registry that map to a real customer job. Use this
 skill when your task doesn't fit one of those, or you need an entry by exact name.
 
+**The 13 domains, and how the 204 entries divide between them** — so you can check a
+claim rather than trust one:
+
+| Domain | Entries | | Domain | Entries |
+|---|---:|---|---|---:|
+| `journeys` | 43 | | `accounts` | 12 |
+| `blu-chat` | 33 | | `segments` | 10 |
+| `analytics` | 21 | | `events` | 9 |
+| `designer` | 20 | | `deals` | 8 |
+| `experiences` | 17 | | `recipes` | 2 |
+| `meetings` | 14 | | `workflows` | 1 |
+| `users` | 13 | | *(no domain)* | 1 |
+
+That is 203 in the 13 domains, plus **one entry with no domain at all** —
+`search_project`. It is a stub (see below), not a category.
+
 ## Discovering what's available
 
 ```bash
@@ -77,6 +93,19 @@ missing body builder. Don't conflate the two.
   other entries don't carry one — in that case say so rather than fabricating a URL.
 - **Recipes are readable**: `list_recipes` and `get_recipe` exist in the `recipes` domain.
   There is still no recipe *creation* or *run* entry in the registry.
+- 🔴 **Two entries are non-functional stubs — never present them as callable.** Both target
+  an abandoned `/mcp/*` namespace that no backend serves, so a call fails at the network,
+  not with a useful error:
+
+  | Entry | Domain | Path |
+  |---|---|---|
+  | `search_project` | *(none)* | `/mcp/search-project` |
+  | `list_active_workflows` | `workflows` | `/mcp/workflows/active` |
+
+  `search_project` is reachable as `intempt search_project` and `list_active_workflows` is
+  the **only** entry in the `workflows` domain — so that entire domain is one stub. If a
+  user asks for project-wide search or active workflows, say it isn't available rather
+  than calling these and reporting the failure as a bug.
 - **Pagination passes straight through to the real endpoint** — list-returning tools
   expose the underlying REST endpoint's own page/pageSize/cursor args. There's no
   CLI/MCP-imposed cap layered on top.
