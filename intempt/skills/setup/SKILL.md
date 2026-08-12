@@ -148,3 +148,27 @@ that's the restart case from step 4: the running server only reads
 
 Setup is complete once the CLI's `intempt whoami` exits 0 and the MCP
 `whoami` tool shows both Organization and Project populated.
+
+## 7. Which client is the user in? The path differs — never promise zero-touch
+
+Everything above assumes **Claude Code**, where the plugin registers the MCP server for you.
+**That is the only client where setup is zero-touch.** If the user is elsewhere, say so
+plainly rather than walking them through steps that cannot work there.
+
+| Client | How the MCP server is reached | Zero-touch? |
+|---|---|---|
+| **Claude Code** | the plugin's `.mcp.json` registers it on install — everything above applies | ✅ yes |
+| **Cursor** | takes the **same `.mcp.json` shape**, but **nothing writes it today** — the user creates the config by hand | ❌ manual |
+| **Claude Desktop** | **Settings → Connectors**, paste an **HTTPS URL**. Manual by design; it cannot read a local `.mcp.json` for a remote server | ❌ manual |
+| **ChatGPT** | connector UI, **HTTPS only**, and **plan-gated** — not on every tier | ❌ manual + gated |
+
+⚠️ **Claude Code plugins do not exist in any other client.** Never tell a Cursor, Claude
+Desktop or ChatGPT user to run `/plugin install` — there is no such command for them.
+
+⚠️ **Claude Desktop and ChatGPT need an HTTPS endpoint, not the npm package.** The stdio
+server (`npx -y intempt-mcp-server`) covers Claude Code and Cursor; the hosted HTTPS
+endpoint the other two require is **not deployed yet**. If a user on either asks to connect,
+tell them it isn't available rather than improvising a URL.
+
+**The honest one-liner:** *"Zero-touch in Claude Code. Everywhere else you configure it by
+hand — and on Claude Desktop / ChatGPT the endpoint it would point at doesn't exist yet."*
