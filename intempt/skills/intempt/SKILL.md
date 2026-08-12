@@ -39,7 +39,7 @@ with a resolved org/project.
 | `market` | journeys, experiences, events | 43 + 17 + 9 |
 | `sell` | meetings, blu-chat (outreach slice) | 14 + partial-33 |
 | `instrument` | native CLI layer, not registry-backed | n/a |
-| `registry` | meta — covers anything above by domain+action name directly | all 202 |
+| `registry` | meta — covers anything above by domain+action name directly | all 204 |
 
 **blu-chat's 33 entries split across two skills, not one** — Brand Kit/personas/knowledge
 base go to `design` (matches Design's own "brand kit + customer data" claim), outreach
@@ -67,12 +67,13 @@ both skills before guessing.
 ## Cross-cutting things worth knowing before you start
 
 - **Natural-language resolution**: any `{id}`-parameterized `users`/`accounts` tool
-  resolves a name or email to an internal ID automatically — first match only, no
-  disambiguation list yet if there are multiple matches. See `crm`.
-- **Write-safety**: the CLI exposes all 202 registry entries; MCP only exposes the 156
-  that aren't `create-or-bulk-or-destructive` (creating something new, or anything with
-  real blast radius, isn't a registry-backed MCP tool at all).
-- **12 registry entries throw an explicit "not yet implemented" error** rather than send
-  an incomplete request — see `registry` for the full list.
-- **No entry anywhere returns a console URL** for the object it's about, and no
-  `compare_*`-style tool exists in any domain.
+  resolves a name or email to an internal ID automatically. **Multiple matches return a
+  candidate list rather than silently picking the first** — pass an explicit identifier
+  (`--id` from the CLI, `id` from an MCP tool). See `crm`.
+- **Write-safety**: the CLI exposes all 204 registry entries; MCP only exposes the 156
+  non-stub entries that aren't `create-or-bulk-or-destructive` (creating something new, or
+  anything with real blast radius, isn't a registry-backed MCP tool at all).
+- **No entry throws "not yet implemented"** — `KNOWN_STRUCTURAL_BODYKEY_GAPS` is empty;
+  entries needing a structural body have a body builder. A failure is a real error.
+- **23 entries DO return a console URL** (via `consoleUrl`) — use the entry's own value,
+  never a constructed one. No `compare_*`-style tool exists in any domain.

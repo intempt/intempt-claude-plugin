@@ -15,9 +15,11 @@ references this skill for entity lookup rather than duplicating it.
 ## Looking someone up
 
 Every `{id}`-parameterized users/accounts tool accepts a name or email directly — it
-resolves to an internal ID via `POST /profile-lists/{users|accounts}`, first match, no
-disambiguation on multiple matches. If a lookup returns someone unexpected, consider a
-same-name collision before assuming bad data.
+resolves to an internal ID via `POST /profile-lists/{users|accounts}`. The lookup asks for
+up to 5 candidates: **if more than one matches, you get the candidate list back instead of
+a silent first-match**, and you must pass an explicit identifier (`--id` from the CLI, `id`
+from an MCP tool call). A same-name collision therefore surfaces as a choice, not as
+mystery data.
 
 Consolidated detail views (`get_user_detail`, `get_account_detail`) replace what used to
 be several narrow reads — pass the view you want rather than looking for a
@@ -39,10 +41,12 @@ on the Users list. It is never edited after creation — there's no add/remove-m
 action, only create and reference. Segments feed Attributes, Experiences, and Journeys
 as a targeting scope.
 
-**`create_segment` cannot actually be called** — it's one of the registry's 12 known
-structural-bodyKey gaps and throws an explicit "not yet implemented" error. If asked to
-build a segment via CLI/MCP, tell the user this isn't dispatchable yet; segment creation
-has to happen in the console today.
+**`create_segment` is not reachable from MCP** — it is classed
+`create-or-bulk-or-destructive`, and that whole class is excluded from MCP tools by
+write-safety. ⚠️ **This is a write-safety exclusion, not a missing body builder** — it used
+to throw "not yet implemented" and no longer does. **It IS callable from the CLI.** So if
+asked to build a segment: from MCP, tell the user to use the CLI or the console; from the
+CLI, just call it.
 
 **"Segment" is overloaded three other ways in the product — don't conflate them:**
 
@@ -56,13 +60,14 @@ has to happen in the console today.
 If a user says "segment," ask which they mean if it's ambiguous — the wrong assumption
 here silently sends you down a UI path that isn't real.
 
-## Known gaps — these throw "not implemented," not bad data
+## Errors here are real errors
 
-Several accounts/deals entries are among the registry's 12 structural-bodyKey gaps:
-`enrich_accounts`, `get_account_event_overview`, `get_account_activity` (accounts);
-`list_deals`, `create_deal`, `get_deal_activity` (deals); plus `create_group` (also
-CRM-adjacent). If one of these errors with "not yet implemented," that's expected —
-don't retry with different arguments.
+The accounts/deals entries that used to throw "not yet implemented"
+(`enrich_accounts`, `get_account_event_overview`, `get_account_activity`, `list_deals`,
+`create_deal`, `get_deal_activity`, `create_group`) all have body builders now —
+`KNOWN_STRUCTURAL_BODYKEY_GAPS` is **empty**. **So a failure from one of these is a
+genuine error to report to the user, not an expected "unimplemented" response.** Don't
+silently swallow it as known-broken, and don't retry blindly either.
 
 **Deals has no AI assistance wired up in the product at all** ("Ask AI about the deal"
 has no submit handler in the console) — don't imply deal analysis beyond what the

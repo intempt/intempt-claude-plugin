@@ -1,6 +1,8 @@
 {
   "name": "intempt",
   "description": "Intempt CLI + MCP server for Claude Code",
-  "version": "0.2.0",
-  "author": { "name": "Intempt" }
+  "version": "0.3.0",
+  "author": {
+    "name": "Intempt"
+  }
 }

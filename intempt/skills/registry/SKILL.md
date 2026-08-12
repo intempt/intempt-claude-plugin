@@ -1,12 +1,12 @@
 ---
 name: registry
-description: Intempt registry — discover and call any of the 202 platform-operation commands directly, across both the CLI and MCP tools. Use when a task doesn't fit crm/analyze/design/market/sell, when you need a command not covered by those skills, or to look up an entry's exact arguments.
+description: Intempt registry — discover and call any of the 204 platform-operation commands directly, across both the CLI and MCP tools. Use when a task doesn't fit crm/analyze/design/market/sell, when you need a command not covered by those skills, or to look up an entry's exact arguments.
 ---
 
 # Intempt registry
 
 `@intempt/commands` is the single shared registry behind both the CLI and the MCP
-tools — 202 entries across 13 feature domains, each with a name, arguments, REST
+tools — 204 entries across 13 feature domains, each with a name, arguments, REST
 endpoint, and a write-safety class. Neither surface wraps the other; both render the
 same registry independently. This skill is the general-purpose way to reach any of it
 directly — the domain skills (`crm`, `analyze`, `design`, `market`, `sell`) are curated
@@ -16,7 +16,7 @@ skill when your task doesn't fit one of those, or you need an entry by exact nam
 ## Discovering what's available
 
 ```bash
-intempt registry list [--json]              # all 202 entries, grouped by domain
+intempt registry list [--json]              # all 204 entries, grouped by domain
 intempt registry describe <tool-name> [--json]   # one entry's args, resolvers, endpoint
 ```
 
@@ -36,10 +36,11 @@ Both accept `--json`/return raw JSON for machine consumption.
 ## Natural-language identifier resolution
 
 Any `{id}`-parameterized `users`/`accounts` entry accepts a name or email instead of an
-internal ID — it resolves via `POST /profile-lists/{users|accounts}`, first match, when
-no explicit ID is passed. **There is no disambiguation on multiple matches** — if two
-people share a name, you get whichever the endpoint returns first, silently. If a lookup
-result looks wrong, consider that a same-name collision before assuming the data is bad.
+internal ID — it resolves via `POST /profile-lists/{users|accounts}` when no explicit ID
+is passed. **Ambiguous matches are reported, not guessed.** The lookup requests up to 5
+candidates; if more than one matches, you get a candidate list back and must pass an
+explicit identifier rather than a silent first-match. Pass it as `--id` from the CLI and
+as `id` from an MCP tool call.
 
 ## Write-safety classes — this determines MCP eligibility, not domain
 
@@ -47,7 +48,7 @@ Every entry carries one of three classes:
 
 | Class | Count | Reachable from |
 |---|---|---|
-| `read` | 105 | CLI + MCP |
+| `read` | 107 | CLI + MCP |
 | `single-edit` (change one thing you already have permission to touch) | 51 | CLI + MCP |
 | `create-or-bulk-or-destructive` | 46 | **CLI only** |
 
@@ -56,25 +57,26 @@ something new, or anything with real blast radius, isn't exposed as an agent too
 at all in this product. If you need one of these and you're working through MCP tools,
 tell the user it needs the CLI (or the console) instead of trying to route around it.
 
-## 12 entries that throw an explicit "not yet implemented" error
+## Request bodies are built for you
 
-These reference structural or derived request-body fields no CLI/MCP caller can supply
-directly (e.g. a computed filter object the console UI builds client-side). Both the CLI
-and MCP dispatch layers deliberately error rather than send an incomplete request:
+Entries that need a structural or derived request body (e.g. a computed filter object the
+console UI builds client-side) have a dedicated body builder. `KNOWN_STRUCTURAL_BODYKEY_GAPS`
+is **empty** — no entry throws "not yet implemented" any more. If a call fails, treat it as
+a real error to report, not as an unimplemented operation.
 
-`get_account_event_overview`, `get_account_activity`, `enrich_accounts`,
-`get_user_activity`, `list_user_meetings`, `enrich_users`, `create_group`,
-`create_segment`, `list_deals`, `create_deal`, `get_deal_activity`, `list_meetings`.
-
-If you hit one of these, don't retry with different arguments — it's not a fixable
-input problem, tell the user the operation isn't implemented yet.
+⚠️ **`create_segment` is still CLI-only** — but for a different reason: it is
+`create-or-bulk-or-destructive`, so it is excluded from MCP by write-safety, not by a
+missing body builder. Don't conflate the two.
 
 ## Other things worth knowing before you assume a capability exists
 
-- **No `compare_*`-style tool exists anywhere in the 202 entries.** If asked to compare
+- **No `compare_*`-style tool exists anywhere in the 204 entries.** If asked to compare
   two things, do it yourself from two separate lookups — don't look for a comparison tool.
-- **No entry returns a console URL** for the object it's about (dashboards, entity
-  details — none of them). Don't fabricate one.
+- **23 entries DO return a console URL** for the object they're about, via `consoleUrl`.
+  Use the one the entry gives you; never construct or guess a console link yourself. The
+  other entries don't carry one — in that case say so rather than fabricating a URL.
+- **Recipes are readable**: `list_recipes` and `get_recipe` exist in the `recipes` domain.
+  There is still no recipe *creation* or *run* entry in the registry.
 - **Pagination passes straight through to the real endpoint** — list-returning tools
   expose the underlying REST endpoint's own page/pageSize/cursor args. There's no
   CLI/MCP-imposed cap layered on top.

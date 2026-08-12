@@ -53,11 +53,12 @@ across several that happen to share a verb.
 |------|------------|
 | `.claude-plugin/marketplace.json` | Marketplace manifest (what `/plugin marketplace add` reads) |
 | `intempt/.claude-plugin/plugin.json` | Plugin manifest |
-| `intempt/.mcp.json` | Registers the MCP server (`npx -y @intempt/mcp-server`) |
+| `intempt/.mcp.json` | Registers the MCP server (`npx -y intempt-mcp-server`) |
 | `intempt/skills/*/SKILL.md` | The 9 skills above |
 
 The actual CLI and MCP server are built in Intempt's internal monorepo and
-published to npm as `@intempt/cli` and `@intempt/mcp-server`. This repo is
+published to npm as `@intempt/cli` (**not yet published**) and **`intempt-mcp-server`**
+(published, live). Note the MCP package is **unscoped** -- `@intempt/mcp-server` 404s. This repo is
 only the Claude Code distribution wrapper around those published packages --
 it has no source code of its own.
 

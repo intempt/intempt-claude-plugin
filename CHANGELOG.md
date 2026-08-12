@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-08-12 (v0.3.0)
+
+- 🔴 **Fixed: the MCP server could never start.** `intempt/.mcp.json` registered
+  `@intempt/mcp-server@^1.0.0`, which **404s on npm** -- the package shipped **unscoped** as
+  **`intempt-mcp-server`**. Every install produced a server that could not launch. Nothing caught it
+  because there was no test asserting the `npx` line resolves.
+- **Corrected every factual claim in the 9 skills**, each verified against the live command registry:
+  202 -> **204** entries; `read` 105 -> **107**; *"no entry returns a console URL"* -> **23 do**, via
+  `consoleUrl`; *"12 entries throw not-yet-implemented"* -> **none do**, the list is empty;
+  *"no disambiguation, first match"* -> **candidates are returned**, pass `--id` (CLI) / `id` (MCP);
+  recipes are **readable** (`list_recipes`, `get_recipe`). `create_segment` is CLI-only for
+  **write-safety**, not a missing body builder.
+- **This repo is now GENERATED, not hand-authored.** The canonical plugin lives in the `intempt/cli`
+  monorepo at `apps/plugin/`; `apps/plugin/scripts/sync-public.mjs` writes this repo and `--check`
+  fails when they diverge. Keeping the same 9 skills correct in two places by hand is what caused most
+  of the defects above, so it is now mechanical.
+
 ## 2026-08-01 (v0.2.0)
 
 - **Added:** 8 new skills -- `intempt` (router), `registry`, `instrument`, `crm`,
