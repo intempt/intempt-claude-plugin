@@ -62,10 +62,13 @@ both skills before guessing.
 
 ## What doesn't exist yet — don't reach for these
 
-- **Recipes** (`recipes list/search/get/preview/run`) — the backend is confirmed absent
-  (two independent searches, zero matches). The `recipe` CLI alias exists but always
-  errors. Content generation (`generate_email` etc., under `design`) is a *different*,
-  real, working mechanism — don't confuse the two.
+- **Recipes — READ works, write does not.** ⚠️ Corrected: a `recipes` domain now exists with
+  **two real read entries**, `list_recipes` and `get_recipe`. There is still no `search`,
+  `preview`, `create` or `run` entry, so recipes cannot be executed from here. Reach the two
+  reads via `intempt:registry`. *(An earlier version of this skill said the backend was
+  "confirmed absent" — that was true when written and is now wrong.)* Content generation
+  (`generate_email` etc., under `design`) is a *different*, real, working mechanism — don't
+  confuse the two.
 - **Agent/NDJSON mode** (`--agent`, `plan --json`) — speced but not built.
 - **`intempt pull`/`intempt diff`** — no such commands exist.
 - **`intempt push`** — exists but doesn't match its own spec (wrong endpoint, no diff
@@ -86,7 +89,8 @@ both skills before guessing.
 - **Write-safety**: the CLI exposes all 204 registry entries; MCP only exposes the 156
   non-stub entries that aren't `create-or-bulk-or-destructive` (creating something new, or
   anything with real blast radius, isn't a registry-backed MCP tool at all).
-- **No entry throws "not yet implemented"** — `KNOWN_STRUCTURAL_BODYKEY_GAPS` is empty;
-  entries needing a structural body have a body builder. A failure is a real error.
+- **No entry throws "not yet implemented"** — `KNOWN_STRUCTURAL_BODYKEY_GAPS` still lists
+  12 names, but it is a watchlist: the dispatcher throws only for a listed name with **no**
+  builder, and all 12 have one. A failure is a real error, not an unimplemented operation.
 - **23 entries DO return a console URL** (via `consoleUrl`) — use the entry's own value,
   never a constructed one. No `compare_*`-style tool exists in any domain.

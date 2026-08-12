@@ -76,9 +76,11 @@ tell the user it needs the CLI (or the console) instead of trying to route aroun
 ## Request bodies are built for you
 
 Entries that need a structural or derived request body (e.g. a computed filter object the
-console UI builds client-side) have a dedicated body builder. `KNOWN_STRUCTURAL_BODYKEY_GAPS`
-is **empty** — no entry throws "not yet implemented" any more. If a call fails, treat it as
-a real error to report, not as an unimplemented operation.
+console UI builds client-side) have a dedicated body builder. **No entry throws "not yet
+implemented" any more.** `KNOWN_STRUCTURAL_BODYKEY_GAPS` still lists 12 names, but it is a
+**watchlist, not a blocklist**: the dispatcher throws only for a name on that list that has
+**no** builder, and all 12 now have one. If a call fails, treat it as a real error to
+report, not as an unimplemented operation.
 
 ⚠️ **`create_segment` is still CLI-only** — but for a different reason: it is
 `create-or-bulk-or-destructive`, so it is excluded from MCP by write-safety, not by a

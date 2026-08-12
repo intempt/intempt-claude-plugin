@@ -64,10 +64,11 @@ here silently sends you down a UI path that isn't real.
 
 The accounts/deals entries that used to throw "not yet implemented"
 (`enrich_accounts`, `get_account_event_overview`, `get_account_activity`, `list_deals`,
-`create_deal`, `get_deal_activity`, `create_group`) all have body builders now —
-`KNOWN_STRUCTURAL_BODYKEY_GAPS` is **empty**. **So a failure from one of these is a
-genuine error to report to the user, not an expected "unimplemented" response.** Don't
-silently swallow it as known-broken, and don't retry blindly either.
+`create_deal`, `get_deal_activity`, `create_group`) **all have body builders now.** They
+remain on the `KNOWN_STRUCTURAL_BODYKEY_GAPS` watchlist, but that list only causes a throw
+for a name with **no** builder. **So a failure from one of these is a genuine error to
+report to the user, not an expected "unimplemented" response.** Don't silently swallow it
+as known-broken, and don't retry blindly either.
 
 **Deals has no AI assistance wired up in the product at all** ("Ask AI about the deal"
 has no submit handler in the console) — don't imply deal analysis beyond what the
