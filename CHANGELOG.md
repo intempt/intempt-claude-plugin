@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-08-14 (v0.3.1)
+
+Skill-accuracy corrections written after v0.3.0 that **never reached anyone**. Claude Code decides
+whether to pull an update by comparing **versions, not commits** -- with the version left at 0.3.0,
+`claude plugin update` answers *"already at the latest version (0.3.0)"* and skips. Reproduced live
+on an install sitting four commits behind while reporting itself up to date. This release carries
+the corrections below across that gate.
+
+- **`KNOWN_STRUCTURAL_BODYKEY_GAPS` was described as empty.** It is a 12-member watchlist whose
+  members all have body builders. The conclusion ("no entry throws not-yet-implemented, so a failure
+  is a real error") was right; the stated reason was not.
+- **Recipes were described as confirmed absent.** A `recipes` domain exists with two real read
+  entries (`list_recipes`, `get_recipe`). There is still no search, preview, create or run entry, so
+  recipes remain unexecutable from here.
+- **Both non-functional stubs are now named** (`search_project`, `list_active_workflows`), with an
+  unrouted-domain table, so an agent can tell "not built" from "not routed".
+- **`registry` lists all 13 domains** rather than asserting a bare count.
+- **`meeting_type` is documented in `sell`** -- 5 entries, exactly 4 MCP-reachable;
+  `create_meeting_type` is CLI-only by write-safety, not by omission.
+- **The 7 `generate_*` tools are marked hand-written**, not registry entries.
+- **`setup` documents the per-client reality.** Claude Code is the only zero-touch client; Cursor
+  (`~/.cursor/mcp.json`) and Claude Desktop (`claude_desktop_config.json`, local stdio, **no HTTPS
+  endpoint required**) are manual.
+
 ## 2026-08-12 (v0.3.0)
 
 - 🔴 **Fixed: the MCP server could never start.** `intempt/.mcp.json` registered
