@@ -4,7 +4,9 @@ Changes to **this repository** — the public marketplace entry.
 
 > **Release notes for the plugin itself now live with the package**, not here:
 > <https://www.npmjs.com/package/intempt-claude-plugin>. This repository no longer contains the
-> plugin, so it no longer has a version to track. It changes only when the marketplace entry does.
+> plugin, so entries below are dated rather than versioned. It changes only when the marketplace
+> entry does. Entries from 2026-08-01 and earlier are archived plugin releases, kept for history —
+> the version numbers and counts in them describe the plugin as it was then, not as it ships today.
 
 ## 2026-08-17 — the plugin moved to npm
 
@@ -16,8 +18,12 @@ skill fix needed both repositories to move.
 
 Claude Code supports an **`npm` plugin source**, so the manifest now points at
 [`intempt-claude-plugin`](https://www.npmjs.com/package/intempt-claude-plugin) and Claude Code
-fetches and unpacks the package on install. The skills live in exactly one place, and a new plugin
-release reaches users by publishing to npm — with no commit here.
+fetches and unpacks the package on install. A new plugin release now reaches users by publishing
+to npm — with no commit here.
+
+> ⚠️ This removes the copy that lived in *this* repository. It does not make the plugin the only
+> place the skills exist: `intempt-mcp-server` also ships a copy for non-Claude-Code clients, and
+> that copy is currently behind. Treat `intempt-claude-plugin` as the current one.
 
 - **Removed:** `intempt/` — the copied plugin. Delivered from npm instead.
 - **Changed:** `.claude-plugin/marketplace.json` — plugin source is now
@@ -31,12 +37,16 @@ release reaches users by publishing to npm — with no commit here.
   package's own `plugin.json`, so the update signal travels inside the package. Pinning a range
   here would mean committing to this repo on every release — the coupling the change removes.
 
-The install commands are unchanged:
+For a **new** install nothing about the commands changes:
 
 ```
 /plugin marketplace add intempt/intempt-claude-plugin
 /plugin install intempt@intempt-plugins
 ```
+
+If you are **already installed** from an older version of this repository, Claude Code will not
+move you onto the npm source on its own — run `/plugin marketplace update intempt-plugins` then
+`/plugin update intempt@intempt-plugins`, and restart. See the README for detail.
 
 ## 2026-08-01 (v0.2.0)
 
