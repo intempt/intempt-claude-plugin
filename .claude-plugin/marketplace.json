@@ -9,7 +9,10 @@
   "plugins": [
     {
       "name": "intempt",
-      "source": "./intempt",
+      "source": {
+        "source": "npm",
+        "package": "intempt-claude-plugin"
+      },
       "description": "Intempt CLI + MCP server -- analytics instrumentation and platform operations from Claude Code"
     }
   ]

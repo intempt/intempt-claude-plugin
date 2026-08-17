@@ -1,5 +1,43 @@
 # Changelog
 
+Changes to **this repository** — the public marketplace entry.
+
+> **Release notes for the plugin itself now live with the package**, not here:
+> <https://www.npmjs.com/package/intempt-claude-plugin>. This repository no longer contains the
+> plugin, so it no longer has a version to track. It changes only when the marketplace entry does.
+
+## 2026-08-17 — the plugin moved to npm
+
+This repository is now a **pointer**, not a copy. It holds a marketplace manifest and a README.
+
+Previously it carried its own copy of the plugin — both manifests and all nine skills — generated
+from Intempt's private CLI monorepo. That meant the same skills existed in two places, and every
+skill fix needed both repositories to move.
+
+Claude Code supports an **`npm` plugin source**, so the manifest now points at
+[`intempt-claude-plugin`](https://www.npmjs.com/package/intempt-claude-plugin) and Claude Code
+fetches and unpacks the package on install. The skills live in exactly one place, and a new plugin
+release reaches users by publishing to npm — with no commit here.
+
+- **Removed:** `intempt/` — the copied plugin. Delivered from npm instead.
+- **Changed:** `.claude-plugin/marketplace.json` — plugin source is now
+  `{ "source": "npm", "package": "intempt-claude-plugin" }`.
+- **Fixed, by deletion:** the copied `intempt/.mcp.json` registered `@intempt/mcp-server@^1.0.0`,
+  which **404s** — the server publishes unscoped as `intempt-mcp-server`, so the plugin installed
+  and its MCP server could never start. The corrected file now ships inside the npm package, and
+  the monorepo guards the name against the package it actually publishes rather than trusting a
+  string typed in two places.
+- **No version pin, deliberately.** Claude Code resolves an npm-sourced plugin's version from the
+  package's own `plugin.json`, so the update signal travels inside the package. Pinning a range
+  here would mean committing to this repo on every release — the coupling the change removes.
+
+The install commands are unchanged:
+
+```
+/plugin marketplace add intempt/intempt-claude-plugin
+/plugin install intempt@intempt-plugins
+```
+
 ## 2026-08-01 (v0.2.0)
 
 - **Added:** 8 new skills -- `intempt` (router), `registry`, `instrument`, `crm`,
