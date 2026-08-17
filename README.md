@@ -1,66 +1,78 @@
-# Intempt Claude Code Plugin
+# Intempt plugin for Claude Code
 
-Registers the Intempt MCP server and bundles a setup skill that installs the
-CLI, logs in, and resolves org/project -- so you don't have to do any of that
-by hand.
+The public marketplace for the **Intempt** plugin — nine skills over the Intempt CLI
+and the Intempt MCP server, for analytics instrumentation and platform operations.
 
 ## Install
 
+In Claude Code:
+
 ```
-/plugin marketplace add intempt/claude-plugin
+/plugin marketplace add intempt/intempt-claude-plugin
 /plugin install intempt@intempt-plugins
 ```
 
-Restart Claude Code (exit and relaunch) -- the MCP server this plugin
-registers isn't picked up until the next session start. Then say:
+Then restart Claude Code. The skills appear as `intempt:<name>`; start with
+`intempt:intempt`, which is a table of contents for the rest.
+
+## What this repository is
+
+A pointer, not a copy. It holds `.claude-plugin/marketplace.json` — the manifest Claude Code
+reads — plus this README, a CHANGELOG, a LICENSE and a SECURITY policy. No plugin source.
+
+The plugin itself is published to npm as
+[`intempt-claude-plugin`](https://www.npmjs.com/package/intempt-claude-plugin), and the manifest points
+Claude Code at that package, which it fetches and unpacks on install. Because no copy of
+the skills is kept here, a skill fix ships by publishing to npm — this repository does not
+need to change.
+
+> ⚠️ Do not `npm install intempt-claude-plugin` by hand — it carries no executable code. It is a
+> payload Claude Code unpacks for you. Use the two commands above.
+
+The plugin's `.mcp.json` starts the Intempt MCP server by running
+`npx -y intempt-mcp-server@^1.0.0`, which is fetched from npm the first time a session needs
+it. That is the only thing the plugin executes.
+
+Source lives in the Intempt CLI monorepo at `apps/plugin/intempt`. That repository is
+private, so **report bugs and request changes as issues on this repository** and we will
+route them; for anything security-sensitive follow [SECURITY.md](SECURITY.md) instead of
+opening an issue.
+
+### Already installed from an older version of this repo?
+
+Earlier versions served the plugin from a directory here. Claude Code does not migrate that
+automatically — run these once:
 
 ```
-run intempt setup
+/plugin marketplace update intempt-plugins
+/plugin update intempt@intempt-plugins
 ```
 
-This invokes the bundled `intempt:setup` skill, which:
+`/plugin list` should then report **0.4.0** or later. Restart Claude Code afterwards.
 
-1. Installs `@intempt/cli` globally via npm if it isn't already on `PATH`
-2. Logs you in (prefers the MCP server's own `login` tool; falls back to
-   `intempt login`, which opens your browser)
-3. Runs `intempt use --org ... --project ...` non-interactively if your
-   account belongs to more than one org, or one org with more than one
-   project
-4. Verifies both the CLI and the MCP server's tools are working
+## Other clients
 
-## Skills
+⚠️ **Plugins are a Claude Code feature.** They do not exist in Cursor, Windsurf, Claude
+Desktop, or the claude.ai app. Those clients consume the MCP server directly — add it to
+that client's own MCP config rather than installing anything globally:
 
-Organized around Intempt's four sold products (Analytics, Design, Marketing,
-Sales), not around internal data domains -- so "draft a follow-up email"
-or "generate a hero image" route to one obvious skill instead of colliding
-across several that happen to share a verb.
+```json
+{
+  "mcpServers": {
+    "intempt": { "command": "npx", "args": ["-y", "intempt-mcp-server@^1.0.0"] }
+  }
+}
+```
 
-| Skill | Covers |
-|-------|--------|
-| `intempt` | Router -- start here, points to the others |
-| `setup` | Install, login, org/project resolution |
-| `instrument` | Tracking plans + typed SDK codegen (`init`/`generate`/`add`/`remove`/`validate`/`status`) |
-| `registry` | Direct access to any of the 202 registry commands, natural-language resolution, write-safety classes |
-| `crm` | Accounts, users/contacts, deals, segments -- the lookup/list layer every product uses |
-| `analyze` | Funnels, retention, dashboards, subscription/revenue metrics |
-| `design` | Content generation (email/SMS/push/page/Slack/text/image), brand assets, brand voice/knowledge base |
-| `market` | Journeys (outreach), experiences (testing/personalization), events |
-| `sell` | Outreach drafting, AI call summaries, the sales motion (references `crm` for lookup) |
+Where that file lives depends on the client — Cursor reads `~/.cursor/mcp.json`, Claude
+Desktop reads `claude_desktop_config.json` in its application-support directory. Restart
+the client afterwards.
 
-## What's in this repo
-
-| Path | What it is |
-|------|------------|
-| `.claude-plugin/marketplace.json` | Marketplace manifest (what `/plugin marketplace add` reads) |
-| `intempt/.claude-plugin/plugin.json` | Plugin manifest |
-| `intempt/.mcp.json` | Registers the MCP server (`npx -y @intempt/mcp-server`) |
-| `intempt/skills/*/SKILL.md` | The 9 skills above |
-
-The actual CLI and MCP server are built in Intempt's internal monorepo and
-published to npm as `@intempt/cli` and `@intempt/mcp-server`. This repo is
-only the Claude Code distribution wrapper around those published packages --
-it has no source code of its own.
+> ⚠️ **Do not run `npm install -g intempt-mcp-server`.** That package's postinstall hook
+> writes nine `SKILL.md` files into `~/.claude/skills/`, **overwriting any file already
+> there with one of those names**, and it configures none of the clients above. The `npx`
+> config block is the supported route; it does not touch your skills directory.
 
 ## License
 
-MIT
+MIT © Intempt — see [LICENSE](LICENSE).
