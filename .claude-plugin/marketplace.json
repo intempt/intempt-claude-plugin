@@ -11,7 +11,7 @@
       "name": "intempt",
       "source": {
         "source": "npm",
-        "package": "intempt-claude-plugin"
+        "package": "@intempt-technologies/plugin"
       },
       "description": "Intempt CLI + MCP server for Claude Code",
       "category": "development",
