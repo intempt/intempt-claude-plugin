@@ -27,7 +27,7 @@ claude plugin marketplace update intempt-plugins
 claude plugin update intempt@intempt-plugins
 ```
 
-If `update` reports the plugin is already current, run
+If `claude plugin list` still shows `intempt` at 0.2.0 after these steps, run
 `claude plugin uninstall intempt@intempt-plugins` and install it again with the two commands in
 the README.
 
