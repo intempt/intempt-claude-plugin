@@ -31,6 +31,9 @@ If `update` reports the plugin is already current, run
 `claude plugin uninstall intempt@intempt-plugins` and install it again with the two commands in
 the README.
 
+To confirm it worked: `claude plugin list` shows `intempt` at 0.6.0 or later, and `/mcp` in a
+new session lists `intempt` as connected. Version 0.2.0 never connects.
+
 ## 2026-08-01 (v0.2.0)
 
 - **Added:** 8 new skills -- `intempt` (router), `registry`, `instrument`, `crm`,
