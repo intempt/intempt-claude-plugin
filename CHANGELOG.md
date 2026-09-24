@@ -1,5 +1,36 @@
 # Changelog
 
+Changes to this repository, the public marketplace entry for the Intempt plugin for Claude Code.
+The plugin itself is published to npm as
+[`@intempt-technologies/plugin`](https://www.npmjs.com/package/@intempt-technologies/plugin).
+Entries dated 2026-08-01 and earlier are releases of the copy that used to live here, and the
+package names in them describe that copy.
+
+## 2026-09-25 — the marketplace installs the published plugin
+
+- **Changed:** `.claude-plugin/marketplace.json` points at the npm package
+  `@intempt-technologies/plugin` instead of the `./intempt` directory. No version is pinned:
+  Claude Code takes the version from the package's own `plugin.json`, so publishing a new
+  version to npm needs no change here.
+- **Removed:** `intempt/`, the copy of plugin 0.2.0. Its `.mcp.json` started
+  `npx -y @intempt/mcp-server@^1.0.0`, a package npm does not have, so the plugin installed but
+  its MCP server never started. The published plugin starts `@intempt-technologies/mcp@1`.
+- **Changed:** `README.md` describes the new layout. It and `.claude-plugin/marketplace.json`
+  are generated from the Intempt CLI monorepo (`packages/plugin/scripts/sync-public.ts`), so
+  change them there.
+
+If you installed the plugin from this repository before this change, run these once in a
+terminal, then restart Claude Code:
+
+```
+claude plugin marketplace update intempt-plugins
+claude plugin update intempt@intempt-plugins
+```
+
+If `update` reports the plugin is already current, run
+`claude plugin uninstall intempt@intempt-plugins` and install it again with the two commands in
+the README.
+
 ## 2026-08-01 (v0.2.0)
 
 - **Added:** 8 new skills -- `intempt` (router), `registry`, `instrument`, `crm`,
