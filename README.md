@@ -17,10 +17,12 @@ Then restart Claude Code. The skills appear as `intempt:<name>`; start with
 
 ## What this repository is
 
-Two files: a marketplace manifest and this README.
+A pointer, not a copy. `.claude-plugin/marketplace.json` is the manifest Claude Code
+reads; everything else here is this README and repository housekeeping. There is no
+plugin source in this repository.
 
-The plugin itself is **not** stored here. It is published to npm as
-[`@intempt-technologies/plugin`](https://www.npmjs.com/package/@intempt-technologies/plugin) and this manifest points
+The plugin is published to npm as
+[`@intempt-technologies/plugin`](https://www.npmjs.com/package/@intempt-technologies/plugin) and the manifest points
 Claude Code at that package, which it fetches and unpacks on install. Keeping the
 plugin in one place means a skill fix ships by publishing, with no second copy here to
 drift out of step.
@@ -28,12 +30,17 @@ drift out of step.
 > ⚠️ Do not `npm install @intempt-technologies/plugin` by hand — it is a payload Claude Code unpacks for
 > you. Use the two commands above. The package ships one executable file, a
 > `SessionStart` hook that removes duplicate copies of these nine skills from
-> `~/.claude/skills/`; it deletes only files whose sha256 matches a published copy, so
-> anything edited locally is preserved and reported.
+> `~/.claude/skills/`. It deletes only files whose sha256 matches a published copy, so a
+> copy you have edited is left in place; the hook names a kept copy only in a session
+> where it also removed a duplicate.
 
-Source lives in the Intempt CLI monorepo under `packages/plugin`. Issues and pull requests
-for the skills belong there; this repository only ever changes when the marketplace
-entry itself does.
+## Reporting a problem
+
+The plugin is built in a private repository, so report bugs and ask for changes in this
+repository's issues: https://github.com/intempt/intempt-claude-plugin/issues
+
+For a security problem, do not open an issue. Follow the security policy instead:
+https://github.com/intempt/intempt-claude-plugin/security/policy
 
 ## Other clients
 

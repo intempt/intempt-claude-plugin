@@ -18,6 +18,8 @@ package names in them describe that copy.
 - **Changed:** `README.md` describes the new layout. It and `.claude-plugin/marketplace.json`
   are generated from the Intempt CLI monorepo (`packages/plugin/scripts/sync-public.ts`), so
   change them there.
+- **Changed:** the README sends bug reports to this repository's issues and security reports
+  to its security policy, and the marketplace description is the text `claude plugin details` shows.
 
 If you installed the plugin from this repository before this change, run these once in a
 terminal, then restart Claude Code:
