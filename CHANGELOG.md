@@ -1,12 +1,27 @@
 # Changelog
 
-Changes to **this repository** — the public marketplace entry.
+Changes to this repository, the public marketplace entry for the Intempt plugin for Claude Code.
+The plugin itself is published to npm as
+[`@intempt-technologies/plugin`](https://www.npmjs.com/package/@intempt-technologies/plugin).
+Entries dated 2026-08-01 and earlier are releases of the copy that used to live here, and the
+package names in them describe that copy.
 
-> **Release notes for the plugin itself now live with the package**, not here:
-> <https://www.npmjs.com/package/intempt-claude-plugin>. This repository no longer contains the
-> plugin, so entries below are dated rather than versioned. It changes only when the marketplace
-> entry does. Entries from 2026-08-01 and earlier are archived plugin releases, kept for history —
-> the version numbers and counts in them describe the plugin as it was then, not as it ships today.
+## 2026-09-29 — the README and the marketplace entry come from the plugin's package
+
+- **Changed:** `README.md` and `.claude-plugin/marketplace.json` are generated from the Intempt CLI
+  monorepo (`packages/plugin/scripts/sync-public.ts`), so change them there. The marketplace
+  description is the text `claude plugin details` shows.
+- **Changed:** the README sends bug reports to this repository's issues and security reports to its
+  security policy, instead of to a repository the public cannot open.
+- **Changed:** this file's header names the published package, `@intempt-technologies/plugin`.
+
+If you installed the plugin from this repository before 2026-08-17, run these once in a terminal,
+then restart Claude Code:
+
+```
+claude plugin marketplace update intempt-plugins
+claude plugin update intempt@intempt-plugins
+```
 
 ## 2026-08-17 — the plugin moved to npm
 

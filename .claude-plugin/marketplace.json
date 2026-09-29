@@ -15,7 +15,13 @@
       },
       "description": "Intempt CLI + MCP server for Claude Code",
       "category": "development",
-      "tags": ["analytics", "instrumentation", "crm", "mcp", "intempt"]
+      "tags": [
+        "analytics",
+        "instrumentation",
+        "crm",
+        "mcp",
+        "intempt"
+      ]
     }
   ]
 }
