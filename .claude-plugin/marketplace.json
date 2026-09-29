@@ -13,7 +13,15 @@
         "source": "npm",
         "package": "@intempt-technologies/plugin"
       },
-      "description": "Intempt CLI + MCP server for Claude Code"
+      "description": "Intempt CLI + MCP server for Claude Code",
+      "category": "development",
+      "tags": [
+        "analytics",
+        "instrumentation",
+        "crm",
+        "mcp",
+        "intempt"
+      ]
     }
   ]
 }
