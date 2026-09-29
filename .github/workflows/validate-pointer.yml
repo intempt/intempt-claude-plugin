@@ -1,0 +1,31 @@
+name: validate-pointer
+
+# This repository's entire function is one string: the npm package name in
+# .claude-plugin/marketplace.json. `claude plugin validate` schema-checks the
+# source shape but never resolves the package, so a typo, a rename or an
+# unpublish would 404 every `/plugin install` with nothing here to catch it.
+# This job resolves the declared package for real and asserts the manifest
+# agrees with what the package actually publishes.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # The package can break without any commit here (unpublish, deprecate),
+    # so check on a timer too, not only on change.
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+jobs:
+  pointer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: The declared package resolves, and the manifest matches it
+        run: node .github/scripts/check-pointer.mjs
