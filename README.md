@@ -17,62 +17,48 @@ Then restart Claude Code. The skills appear as `intempt:<name>`; start with
 
 ## What this repository is
 
-A pointer, not a copy. It holds `.claude-plugin/marketplace.json` — the manifest Claude Code
-reads — plus this README, a CHANGELOG, a LICENSE and a SECURITY policy. No plugin source.
+A pointer, not a copy. `.claude-plugin/marketplace.json` is the manifest Claude Code
+reads; everything else here is this README and repository housekeeping. There is no
+plugin source in this repository.
 
-The plugin itself is published to npm as
-[`intempt-claude-plugin`](https://www.npmjs.com/package/intempt-claude-plugin), and the manifest points
-Claude Code at that package, which it fetches and unpacks on install. Because no copy of
-the skills is kept here, a skill fix ships by publishing to npm — this repository does not
-need to change.
+The plugin is published to npm as
+[`@intempt-technologies/plugin`](https://www.npmjs.com/package/@intempt-technologies/plugin) and the manifest points
+Claude Code at that package, which it fetches and unpacks on install. Keeping the
+plugin in one place means a skill fix ships by publishing, with no second copy here to
+drift out of step.
 
-> ⚠️ Do not `npm install intempt-claude-plugin` by hand — it carries no executable code. It is a
-> payload Claude Code unpacks for you. Use the two commands above.
+> ⚠️ Do not `npm install @intempt-technologies/plugin` by hand — it is a payload Claude Code unpacks for
+> you. Use the two commands above. The package ships one executable file, a
+> `SessionStart` hook that removes duplicate copies of these nine skills from
+> `~/.claude/skills/`. It deletes only files whose sha256 matches a published copy, so a
+> copy you have edited is left in place; the hook names a kept copy only in a session
+> where it also removed a duplicate.
 
-The plugin's `.mcp.json` starts the Intempt MCP server by running
-`npx -y intempt-mcp-server@^1.0.0`, which is fetched from npm the first time a session needs
-it. That is the only thing the plugin executes.
+## Reporting a problem
 
-Source lives in the Intempt CLI monorepo at `apps/plugin/intempt`. That repository is
-private, so **report bugs and request changes as issues on this repository** and we will
-route them; for anything security-sensitive follow [SECURITY.md](SECURITY.md) instead of
-opening an issue.
+The plugin is built in a private repository, so report bugs and ask for changes in this
+repository's issues: https://github.com/intempt/intempt-claude-plugin/issues
 
-### Already installed from an older version of this repo?
-
-Earlier versions served the plugin from a directory here. Claude Code does not migrate that
-automatically — run these once:
-
-```
-/plugin marketplace update intempt-plugins
-/plugin update intempt@intempt-plugins
-```
-
-`/plugin list` should then report **0.4.0** or later. Restart Claude Code afterwards.
+For a security problem, do not open an issue. Follow the security policy instead:
+https://github.com/intempt/intempt-claude-plugin/security/policy
 
 ## Other clients
 
 ⚠️ **Plugins are a Claude Code feature.** They do not exist in Cursor, Windsurf, Claude
-Desktop, or the claude.ai app. Those clients consume the MCP server directly — add it to
-that client's own MCP config rather than installing anything globally:
+Desktop, or the claude.ai app. Those clients consume the MCP server directly -- via that client's own MCP config:
 
 ```json
 {
   "mcpServers": {
-    "intempt": { "command": "npx", "args": ["-y", "intempt-mcp-server@^1.0.0"] }
+    "intempt": {
+      "command": "npx",
+      "args": ["-y", "@intempt-technologies/mcp@1"]
+    }
   }
 }
 ```
 
-Where that file lives depends on the client — Cursor reads `~/.cursor/mcp.json`, Claude
-Desktop reads `claude_desktop_config.json` in its application-support directory. Restart
-the client afterwards.
+A global `npm install -g` also works, but its postinstall writes the nine skills
+into `~/.claude/skills/` and overwrites same-named files there.
 
-> ⚠️ **Do not run `npm install -g intempt-mcp-server`.** That package's postinstall hook
-> writes nine `SKILL.md` files into `~/.claude/skills/`, **overwriting any file already
-> there with one of those names**, and it configures none of the clients above. The `npx`
-> config block is the supported route; it does not touch your skills directory.
-
-## License
-
-MIT © Intempt — see [LICENSE](LICENSE).
+MIT © Intempt
