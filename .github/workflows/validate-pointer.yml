@@ -19,7 +19,7 @@ on:
 
 jobs:
   pointer:
-    runs-on: intempt-ubuntu-github-runner
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
